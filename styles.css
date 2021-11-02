@@ -810,7 +810,8 @@ footer {
     display: none;
   }
 
-  .project__desc--para {
+  .project__desc--para,
+  .project__desc--para--list {
     display: none;
   }
 
