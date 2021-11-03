@@ -388,7 +388,7 @@ header {
 }
 
 .modal__language {
-  width: calc(100% / 3);
+  width: calc(25%);
   padding: 16px;
   position: relative;
   display: flex;
@@ -424,25 +424,24 @@ header {
 }
 
 .modal__language__img--css {
-  width: 60%;
+  width: 73%;
 }
 
 .modal__language__img--js {
   border-radius: 8px;
-  margin-top: 8px;
-
 }
 
 .modal__language__img--react {
-  max-width: 200px;
-  width: 125%;
+  max-width: 225px;
+  width: 150%;
 }
 
 .modal__language__img--node {
   width: 90%;
 }
 
-.language__name--html {
+.language__name--html,
+.language__name--git {
   color: #F16529;
 }
 
@@ -464,6 +463,10 @@ header {
 
 .language__name--node {
   color: #61A652;
+}
+
+.language__name--postgres {
+  color: #336791;
 }
 
 .modal__contact {
