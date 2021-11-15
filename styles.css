@@ -440,8 +440,12 @@ header {
   width: 90%;
 }
 
-.language__name--html,
-.language__name--git {
+.modal__language__img--docker {
+  max-width: 200px;
+  width: 115%
+}
+
+.language__name--html {
   color: #F16529;
 }
 
@@ -467,6 +471,10 @@ header {
 
 .language__name--postgres {
   color: #336791;
+}
+
+.language__name--docker {
+  color: #0db7ed;
 }
 
 .modal__contact {
