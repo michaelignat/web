@@ -634,6 +634,11 @@ header {
   transition: all 450ms ease;
 }
 
+.oapi--link {
+  text-decoration: underline;
+  color: white;
+}
+
 .project__desc {
   position: absolute;
   top: 50%;
@@ -659,7 +664,7 @@ header {
   margin-top: 8px;
 }
 
-.project__desc--para {
+.project__desc--para--wrapper {
   margin: 16px 0;
 }
 
@@ -671,6 +676,7 @@ header {
   list-style: circle;
   color: white;
   margin-left: 16px;
+  padding: 8px 0;
 }
 
 .project__desc--link {
