@@ -419,16 +419,8 @@ header {
   max-width: 75px;
 }
 
-.modal__language__img--html {
+.modal__language__img--tailwind {
   max-width: 85px;
-}
-
-.modal__language__img--css {
-  width: 73%;
-}
-
-.modal__language__img--js {
-  border-radius: 8px;
 }
 
 .modal__language__img--react {
@@ -442,31 +434,31 @@ header {
 
 .modal__language__img--docker {
   max-width: 200px;
-  width: 115%
+  width: 115%;
 }
 
-.language__name--html {
-  color: #F16529;
+.language__name--tailwind {
+  color: #38bdf8;
 }
 
-.language__name--css {
-  color: #2965F1;
+.language__name--sass {
+  color: #a4527b;
 }
 
-.language__name--js {
-  color: #F0DB4F;
+.language__name--aws {
+  color: #cc7a00;
 }
 
 .language__name--ts {
-  color: #2D79C7;
+  color: #2d79c7;
 }
 
 .language__name--react {
-  color: #61DAFB;
+  color: #61dafb;
 }
 
 .language__name--node {
-  color: #61A652;
+  color: #61a652;
 }
 
 .language__name--postgres {
@@ -652,12 +644,18 @@ header {
 .project__desc--title,
 .project__desc--sub-title,
 .project__desc--para,
-.project__desc--link {
+.project__desc--link,
+.project__desc--date {
   color: white;
 }
 
 .project__desc--title {
   font-size: 40px;
+}
+
+.project__desc--date {
+  font-weight: normal;
+  font-style: italic;
 }
 
 .project__desc--sub-title {
