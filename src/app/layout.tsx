@@ -12,8 +12,7 @@ export const metadata: Metadata = {
     template: "%s - Michael Ignat",
     default: "Michael Ignat",
   },
-  description:
-    "A software engineer based in Perth, looking to build products that truly make a difference.",
+  description: "A software engineer based in Perth, Australia.",
 };
 
 export default ({
