@@ -60,7 +60,7 @@ export default () => {
         <div className="lg:pl-20">
           <div className="max-w-xs lg:max-w-none lg:mt-20">
             <Image
-              src="/assets/me.jpeg"
+              src="/portfolio/images/me.jpeg"
               alt="Michael Ignat"
               sizes="29rem"
               width={495}

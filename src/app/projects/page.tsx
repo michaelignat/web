@@ -19,7 +19,7 @@ const projects = [
     description:
       "A declarative CDK powered by Terraform to assist with the creation of infrastructure.",
     href: "https://github.com/envtio/", // TODO: update to https://hub.envt.io/ when done
-    image: "/assets/logos/envt.webp",
+    image: "/portfolio/images/envt.webp",
     inProgress: true,
   },
   {
@@ -28,7 +28,7 @@ const projects = [
     description:
       "A web consulting agency that I run with my business partner helping businesses grow through technology.",
     href: "https://struo.dev/",
-    image: "/assets/logos/struo.svg",
+    image: "/portfolio/images/struo.svg",
   },
   {
     name: "No_Ops",
@@ -36,7 +36,7 @@ const projects = [
     description:
       "An AWS wrapper that abstracts DevOps, making it easier for developers to deploy products.",
     href: "https://www.getnoops.com/",
-    image: "/assets/logos/noops.svg",
+    image: "/portfolio/images/noops.svg",
   },
 
   {
@@ -45,7 +45,7 @@ const projects = [
     description:
       "A payment service that allows for easy monetary transactions to be sent to different vendors.",
     href: "https://www.myinflow.com/",
-    image: "/assets/logos/inflow.svg",
+    image: "/portfolio/images/inflow.svg",
   },
 ];
 

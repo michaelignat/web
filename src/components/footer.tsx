@@ -19,7 +19,7 @@ export const Footer = () => {
         </span>
 
         <Image
-          src="/assets/cross.png"
+          src="portfolio/images/cross.png"
           alt="Orthodox Cross"
           width={10}
           height={10}
