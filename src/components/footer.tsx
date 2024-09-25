@@ -21,7 +21,7 @@ export const Footer = () => {
         <Image
           src="/images/cross.png"
           alt="Orthodox Cross"
-          width={13}
+          width={15}
           height={20}
           className="dark:invert"
         />

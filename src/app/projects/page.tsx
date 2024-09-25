@@ -19,16 +19,16 @@ const projects = [
     description:
       "A declarative CDK powered by Terraform to assist with the creation of infrastructure.",
     href: "https://github.com/envtio/", // TODO: update to https://hub.envt.io/ when done
-    image: "/images/envt.webp",
+    image: { href: "/images/envt.webp", width: 20, height: 20 },
     inProgress: true,
   },
   {
     name: "Struo",
     technologies: "Next, Serwist, Tailwind, PostgreSQL, Figma",
     description:
-      "A web consulting agency that I run with my business partner helping businesses grow through technology.",
+      "A web consulting agency run with my business partner, helping companies grow through innovative solutions.",
     href: "https://struo.dev/",
-    image: "/images/struo.svg",
+    image: { href: "/images/struo.svg", width: 15, height: 15 },
   },
   {
     name: "No_Ops",
@@ -36,7 +36,7 @@ const projects = [
     description:
       "An AWS wrapper that abstracts DevOps, making it easier for developers to deploy products.",
     href: "https://www.getnoops.com/",
-    image: "/images/noops.svg",
+    image: { href: "/images/noops.svg", width: 20, height: 20 },
   },
 
   {
@@ -45,7 +45,7 @@ const projects = [
     description:
       "A payment service that allows for easy monetary transactions to be sent to different vendors.",
     href: "https://www.myinflow.com/",
-    image: "/images/inflow.svg",
+    image: { href: "/images/inflow.svg", width: 15, height: 15 },
   },
 ];
 
@@ -80,10 +80,10 @@ export default () => (
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-x-2">
                   <Image
-                    src={project.image}
+                    src={project.image.href}
                     alt={project.name}
-                    width={20}
-                    height={20}
+                    width={project.image.width}
+                    height={project.image.height}
                   />
 
                   <CardTitle>{project.name}</CardTitle>
