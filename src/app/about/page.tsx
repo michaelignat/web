@@ -60,12 +60,12 @@ export default () => {
         <div className="lg:pl-20">
           <div className="max-w-xs lg:max-w-none lg:mt-20">
             <Image
-              src="/portfolio/images/me.jpeg"
+              src="/images/me.jpeg"
               alt="Michael Ignat"
               sizes="29rem"
-              width={495}
-              height={495}
-              className="h-auto w-auto rounded-2xl"
+              width={300}
+              height={300}
+              className="rounded-2xl"
             />
           </div>
 

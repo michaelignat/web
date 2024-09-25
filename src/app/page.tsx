@@ -15,7 +15,7 @@ export default () => (
 
       <div className="flex space-x-6">
         <Link
-          href="portfolio/IGNATmichael_Resume_2024.pdf"
+          href="/IGNATmichael_Resume_2024.pdf"
           target="_blank"
           className={cn(
             buttonVariants({ variant: "outline", size: "sm" }),

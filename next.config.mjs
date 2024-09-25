@@ -8,10 +8,11 @@ const nextConfig = {
    * @see https://github.com/gregrickaby/nextjs-github-pages
    */
   output: "export",
-  basePath: "/portfolio",
   images: {
     unoptimized: true,
   },
+  swcMinify: true,
+  reactStrictMode: true,
 };
 
 export default nextConfig;

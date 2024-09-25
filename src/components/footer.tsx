@@ -19,11 +19,11 @@ export const Footer = () => {
         </span>
 
         <Image
-          src="portfolio/images/cross.png"
+          src="/images/cross.png"
           alt="Orthodox Cross"
-          width={10}
-          height={10}
-          className="h-auto w-auto rounded-2xl dark:invert"
+          width={13}
+          height={20}
+          className="dark:invert"
         />
       </PageContainer>
     </footer>
