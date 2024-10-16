@@ -25,6 +25,8 @@ jobs:
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
+        with:
+          mask-password: false # WARNING: disable this if you enable debug logging
 
       - name: Build, tag, and push docker image to Amazon ECR
         id: build-image
@@ -36,6 +38,8 @@ jobs:
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
           echo "image=$REGISTRY/$REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+    outputs:
+      docker_password: ${{ steps.login-ecr.outputs.docker_password_151810432394_dkr_ecr_us_east_1_amazonaws_com }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -59,9 +63,9 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Get ECR password
+      - name: Set ECR password
         run: |
-          echo "KAMAL_REGISTRY_PASSWORD=$(aws ecr get-login-password)" >> $GITHUB_ENV
+          echo "KAMAL_REGISTRY_PASSWORD=${{ needs.build.outputs.docker_password }}" >> $GITHUB_ENV
 
       - name: Run deploy command
         run: kamal deploy
