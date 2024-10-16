@@ -21,7 +21,6 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::151810432394:role/GitHub-Actions-ECR-michaelignat
           aws-region: us-east-1
-          output-credentials: true
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -52,9 +51,7 @@ jobs:
         id: buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Setup Kamal alias
+      - name: Setup Kamal and Deploy
         run: |
-          alias kamal='docker run -it --rm -v "${PWD}:/workdir" -v "${SSH_AUTH_SOCK}:/ssh-agent" -v /var/run/docker.sock:/var/run/docker.sock -e "SSH_AUTH_SOCK=/ssh-agent" ghcr.io/basecamp/kamal:latest'
-
-      - name: Deploy
-        run: kamal setup
+          alias kamal='docker run -i --rm -v "${PWD}:/workdir" -v "${SSH_AUTH_SOCK}:/ssh-agent" -v /var/run/docker.sock:/var/run/docker.sock -e "SSH_AUTH_SOCK=/ssh-agent" ghcr.io/basecamp/kamal:latest'
+          kamal setup
