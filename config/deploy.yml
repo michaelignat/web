@@ -16,11 +16,10 @@ proxy:
     timeout: 49
 
 registry:
-  server:
-    - KAMAL_REGISTRY_SERVER
+  server: 151810432394.dkr.ecr.us-east-1.amazonaws.com
   username: AWS
   password:
-    - <%= %x(./scripts/get-ecr-login.sh) %>
+    - KAMAL_REGISTRY_PASSWORD
 
 builder:
   arch: amd64
