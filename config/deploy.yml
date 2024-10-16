@@ -1,0 +1,26 @@
+service: web
+
+image: michaelignat/web
+
+servers:
+  web:
+    - 170.64.141.133
+
+proxy:
+  ssl: true
+  host: michaelignat.com.au
+  app_port: 3000
+  healthcheck:
+    path: /health
+    interval: 7
+    timeout: 49
+
+registry:
+  server:
+    - KAMAL_REGISTRY_SERVER
+  username: AWS
+  password:
+    - <%= %x(./scripts/get-ecr-login.sh) %>
+
+builder:
+  arch: amd64
