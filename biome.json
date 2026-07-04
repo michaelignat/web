@@ -12,6 +12,7 @@
   "files": {
     "ignore": [
       "dist",
+      "out",
       ".next",
       "public",
       "pages-legacy"
