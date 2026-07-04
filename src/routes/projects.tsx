@@ -21,9 +21,9 @@ const projects = [
   },
   {
     name: "Struo",
-    technologies: "Next, Serwist, Tailwind, PostgreSQL, Figma",
+    technologies: "Tanstack Start, Tailwind, Figma",
     description:
-      "Web consulting agency that helps companies grow through innovative solutions.",
+      "My web consulting agency that helps companies grow through innovative solutions.",
     href: "https://struo.dev/",
     image: { href: "/images/struo.svg", width: 15, height: 15 },
   },
