@@ -1,249 +1,454 @@
 "use client";
 
-import { animated, useSpring } from "@react-spring/three";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Bloom, EffectComposer, Noise } from "@react-three/postprocessing";
-import { useCallback, useEffect, useMemo, useRef } from "react";
-import { createNoise3D } from "simplex-noise";
-import {
-  BufferAttribute,
-  Color,
-  type Points,
-  type ShaderMaterial,
-  Vector3,
-} from "three";
+import { useEffect, useRef } from "react";
 import { useTheme } from "./theme/theme-provider";
 
-export const MovingParticleSphere = () => (
-  <div className="fixed inset-0 w-full h-full">
-    <Canvas camera={{ position: [0, 0, 6], fov: 75 }}>
-      <SceneContent />
-    </Canvas>
-  </div>
-);
+const SHELLS = [
+  {
+    alphaDark: 0.24,
+    alphaLight: 0.28,
+    count: 7200,
+    jitter: 0.4,
+    radius: 2.95,
+    seed: 0,
+    size: 2.8,
+    speed: 0.11,
+  },
+  {
+    alphaDark: 0.16,
+    alphaLight: 0.24,
+    count: 2800,
+    jitter: 1,
+    radius: 4.35,
+    seed: 1,
+    size: 2.3,
+    speed: -0.07,
+  },
+  {
+    alphaDark: 0.42,
+    alphaLight: 0.48,
+    count: 1200,
+    jitter: 0.18,
+    radius: 3.22,
+    seed: 2,
+    size: 4.4,
+    speed: 0.19,
+  },
+] as const;
 
-const SceneContent = () => {
-  const { scene } = useThree();
+const VERTEX_SHADER = `
+attribute vec3 aPosition;
+attribute float aPhase;
+attribute float aSize;
 
+uniform float uAlpha;
+uniform float uAspect;
+uniform float uDevicePixelRatio;
+uniform float uIntro;
+uniform mat3 uRotation;
+uniform float uScale;
+
+varying float vAlpha;
+varying float vGlow;
+
+void main() {
+  vec3 position = uRotation * (aPosition * uScale * mix(0.74, 1.0, uIntro));
+  float viewZ = position.z - 6.0;
+  float perspective = max(0.001, -viewZ);
+  float fov = 1.428148;
+
+  gl_Position = vec4(
+    (position.x * fov) / uAspect,
+    position.y * fov,
+    0.0,
+    perspective
+  );
+
+  gl_PointSize = clamp(aSize * uDevicePixelRatio * (6.0 / perspective), 1.0, 8.0);
+  vAlpha = uAlpha * smoothstep(0.0, 1.0, uIntro);
+  vGlow = 0.82 + aPhase * 0.18;
+}
+`;
+
+const FRAGMENT_SHADER = `
+precision mediump float;
+
+uniform vec3 uColor;
+
+varying float vAlpha;
+varying float vGlow;
+
+void main() {
+  vec2 point = gl_PointCoord - vec2(0.5);
+  float distanceFromCenter = length(point) * 2.0;
+  float alpha = smoothstep(1.0, 0.08, distanceFromCenter) * vAlpha * vGlow;
+
+  if (alpha < 0.01) {
+    discard;
+  }
+
+  gl_FragColor = vec4(uColor, alpha);
+}
+`;
+
+type ParticleLayer = {
+  alpha: number;
+  buffer: WebGLBuffer;
+  count: number;
+  phase: number;
+  speed: number;
+};
+
+export const MovingParticleSphere = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const { resolvedTheme } = useTheme();
-  const isLight = resolvedTheme === "light";
-
-  const sphereColor = isLight ? "#000000" : "#FFFFFF";
 
   useEffect(() => {
-    const color = new Color(sphereColor);
+    const canvas = canvasRef.current;
 
-    scene.traverse((object) => {
-      if (object.type !== "Points") {
-        return;
-      }
-      const material = (object as Points).material as ShaderMaterial;
-      if (material.uniforms.color) {
-        material.uniforms.color.value = color;
-        material.uniformsNeedUpdate = true;
-      }
-    });
-  }, [sphereColor, scene]);
-
-  return (
-    <>
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} />
-      <EffectComposer>
-        <Bloom
-          intensity={0.05}
-          luminanceThreshold={0.2}
-          luminanceSmoothing={0.9}
-          height={300}
-        />
-        <Noise opacity={isLight ? 0.25 : 0.05} />
-      </EffectComposer>
-
-      <MorphingSphere
-        sphereRadius={3}
-        noiseStrength={0.25}
-        opacity={isLight ? 0.25 : 0.1}
-        colour={sphereColor}
-      />
-      <MorphingSphere
-        sphereRadius={3.25}
-        opacity={0.5}
-        timeScale={0.15}
-        particleCount={250}
-        colour={sphereColor}
-      />
-      <MorphingSphere
-        sphereRadius={3.25}
-        opacity={isLight ? 0.25 : 0.05}
-        timeScale={0.15}
-        particleCount={10000}
-        colour={sphereColor}
-      />
-      <MorphingSphere
-        sphereRadius={5}
-        opacity={isLight ? 0.25 : 0.025}
-        timeScale={0.1}
-        particleCount={10000}
-        colour={sphereColor}
-      />
-    </>
-  );
-};
-
-const vertexShader = `
-  attribute float size;
-  varying vec3 vPosition;
-  void main() {
-    vPosition = position;
-    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-    gl_PointSize = size * (300.0 / -mvPosition.z);
-    gl_Position = projectionMatrix * mvPosition;
-  }
-`;
-
-const fragmentShader = `
-  uniform vec3 color;
-  uniform float opacity;
-  void main() {
-    if (length(gl_PointCoord - vec2(0.5, 0.5)) > 0.475) discard;
-    gl_FragColor = vec4(color, opacity);
-  }
-`;
-
-// Reusable Vector3 instance to avoid creating new objects
-const _vec3 = new Vector3();
-
-type MorphingSphereProps = {
-  sphereRadius: number;
-  timeScale?: number;
-  noiseStrength?: number;
-  particleCount?: number;
-  colour?: string;
-  opacity?: number;
-};
-
-const MorphingSphere = ({
-  sphereRadius,
-  timeScale = 0.2,
-  noiseStrength = 0.2,
-  particleCount = 100000,
-  colour = "#FFFFFF",
-  opacity = 1,
-}: MorphingSphereProps) => {
-  const particlesRef = useRef<Points>(null);
-  const timeRef = useRef(0);
-
-  const noise3D = useMemo(() => createNoise3D(), []);
-
-  const { scale } = useSpring({
-    from: { scale: 0 },
-    to: { scale: 1 },
-    config: { mass: 1, tension: 120, friction: 50 },
-  });
-
-  useFrame(({ clock }) => {
-    timeRef.current = clock.getElapsedTime() * timeScale;
-    updateParticles(timeRef.current);
-  });
-
-  const shaderColour = useMemo(() => {
-    const c = new Color(colour);
-    return new Vector3(c.r, c.g, c.b);
-  }, [colour]);
-
-  const [particles, originalPositions, sizes] = useMemo(() => {
-    const particlesArray = new Float32Array(particleCount * 3);
-    const origPositions = new Float32Array(particleCount * 3);
-    const sizesArray = new Float32Array(particleCount);
-
-    for (let i = 0; i < particleCount; i++) {
-      // generate random spherical coordinates
-      const theta = Math.random() * 2 * Math.PI;
-      const phi = Math.acos(2 * Math.random() - 1);
-      const r = sphereRadius * (0.9 + Math.random() * 0.1);
-
-      // convert spherical coordinates to cartesian
-      const x = r * Math.sin(phi) * Math.cos(theta);
-      const y = r * Math.sin(phi) * Math.sin(theta);
-      const z = r * Math.cos(phi);
-
-      // set initial and original positions
-      const index = i * 3;
-      particlesArray[index] = origPositions[index] = x;
-      particlesArray[index + 1] = origPositions[index + 1] = y;
-      particlesArray[index + 2] = origPositions[index + 2] = z;
-      sizesArray[i] = Math.random() * 0.01 + 0.002;
-    }
-
-    return [particlesArray, origPositions, sizesArray];
-  }, []);
-
-  // create buffer attributes for particle positions and sizes
-  const attribute = useMemo(
-    () => new BufferAttribute(particles, 3),
-    [particles],
-  );
-  const sizeAttribute = useMemo(() => new BufferAttribute(sizes, 1), [sizes]);
-
-  /**
-   * updates particles positions based on noise
-   */
-  const updateParticles = useCallback((time: number) => {
-    if (!particlesRef.current) {
+    if (!canvas) {
       return;
     }
 
-    const positions = particlesRef.current.geometry.attributes.position
-      .array as Float32Array;
-
-    for (let i = 0; i < particleCount; i++) {
-      const index = i * 3;
-      const origX = originalPositions[index];
-      const origY = originalPositions[index + 1];
-      const origZ = originalPositions[index + 2];
-
-      // generate noise value for this particle
-      const noise = noise3D(origX + time, origY + time, origZ + time);
-      const noiseDisplacement = noiseStrength * noise;
-
-      // calculate new position based on noise
-      const particlePos = _vec3
-        .set(origX, origY, origZ)
-        .normalize()
-        .multiplyScalar(sphereRadius + noiseDisplacement);
-
-      positions[index] = particlePos.x;
-      positions[index + 1] = particlePos.y;
-      positions[index + 2] = particlePos.z;
-    }
-
-    particlesRef.current.geometry.attributes.position.needsUpdate = true;
-  }, []);
+    return mountParticleRenderer(canvas, resolvedTheme === "light");
+  }, [resolvedTheme]);
 
   return (
-    <animated.group scale={scale}>
-      <points ref={particlesRef}>
-        <bufferGeometry>
-          <bufferAttribute attach="attributes-position" {...attribute} />
-          <bufferAttribute attach="attributes-size" {...sizeAttribute} />
-        </bufferGeometry>
-
-        <shaderMaterial
-          attach="material"
-          args={[
-            {
-              uniforms: {
-                color: { value: shaderColour },
-                opacity: { value: opacity },
-              },
-              vertexShader,
-              fragmentShader,
-              transparent: true,
-              depthWrite: false,
-            },
-          ]}
-        />
-      </points>
-    </animated.group>
+    <div className="pointer-events-none fixed inset-0 h-full w-full">
+      <canvas className="block h-full w-full" ref={canvasRef} />
+    </div>
   );
+};
+
+const mountParticleRenderer = (canvas: HTMLCanvasElement, isLight: boolean) => {
+  const contextAttributes = {
+    alpha: true,
+    antialias: false,
+    depth: false,
+    failIfMajorPerformanceCaveat: false,
+    powerPreference: "high-performance",
+    premultipliedAlpha: false,
+    preserveDrawingBuffer: false,
+    stencil: false,
+  } satisfies WebGLContextAttributes;
+  const gl =
+    (canvas.getContext(
+      "webgl",
+      contextAttributes,
+    ) as WebGLRenderingContext | null) ??
+    (canvas.getContext(
+      "experimental-webgl",
+      contextAttributes,
+    ) as WebGLRenderingContext | null);
+
+  if (!gl) {
+    return;
+  }
+
+  const program = createProgram(gl, VERTEX_SHADER, FRAGMENT_SHADER);
+
+  if (!program) {
+    return;
+  }
+
+  const attributes = {
+    phase: gl.getAttribLocation(program, "aPhase"),
+    position: gl.getAttribLocation(program, "aPosition"),
+    size: gl.getAttribLocation(program, "aSize"),
+  };
+  const uniforms = {
+    alpha: gl.getUniformLocation(program, "uAlpha"),
+    aspect: gl.getUniformLocation(program, "uAspect"),
+    color: gl.getUniformLocation(program, "uColor"),
+    devicePixelRatio: gl.getUniformLocation(program, "uDevicePixelRatio"),
+    intro: gl.getUniformLocation(program, "uIntro"),
+    rotation: gl.getUniformLocation(program, "uRotation"),
+    scale: gl.getUniformLocation(program, "uScale"),
+  };
+  const layers = createParticleLayers(gl, isLight);
+  const rotationMatrix = new Float32Array(9);
+  const stride = 5 * Float32Array.BYTES_PER_ELEMENT;
+  let animationFrame = 0;
+  let intro = 0;
+  let lastTime = performance.now();
+  let disposed = false;
+
+  if (layers.length === 0) {
+    gl.deleteProgram(program);
+    return;
+  }
+
+  gl.useProgram(program);
+  gl.disable(gl.DEPTH_TEST);
+  gl.enable(gl.BLEND);
+  gl.blendEquation(gl.FUNC_ADD);
+  gl.blendFunc(gl.SRC_ALPHA, isLight ? gl.ONE_MINUS_SRC_ALPHA : gl.ONE);
+  gl.clearColor(0, 0, 0, 0);
+  gl.uniform1f(uniforms.devicePixelRatio, 1);
+  setUniformColor(gl, uniforms.color, isLight);
+
+  const resize = () => {
+    const rect = canvas.getBoundingClientRect();
+    const width = Math.max(1, Math.floor(rect.width));
+    const height = Math.max(1, Math.floor(rect.height));
+
+    if (canvas.width !== width || canvas.height !== height) {
+      canvas.width = width;
+      canvas.height = height;
+      gl.viewport(0, 0, width, height);
+    }
+
+    gl.uniform1f(uniforms.aspect, width / height);
+  };
+  const observer = new ResizeObserver(resize);
+  const render = (now: number) => {
+    if (disposed) {
+      return;
+    }
+
+    const delta = Math.min(0.05, (now - lastTime) / 1000);
+    const time = now / 1000;
+    lastTime = now;
+    intro = damp(intro, 1, 2.8, delta);
+
+    resize();
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.uniform1f(uniforms.intro, intro);
+
+    for (const layer of layers) {
+      const scale = 1 + Math.sin(time * 0.34 + layer.phase) * 0.012;
+      setRotationMatrix(
+        rotationMatrix,
+        time * layer.speed + layer.phase,
+        Math.sin(time * 0.08 + layer.phase) * 0.065,
+        Math.cos(time * 0.06 + layer.phase) * 0.038,
+      );
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, layer.buffer);
+      enableAttribute(gl, attributes.position, 3, stride, 0);
+      enableAttribute(gl, attributes.phase, 1, stride, 3);
+      enableAttribute(gl, attributes.size, 1, stride, 4);
+      gl.uniform1f(uniforms.alpha, layer.alpha);
+      gl.uniform1f(uniforms.scale, scale);
+      gl.uniformMatrix3fv(uniforms.rotation, false, rotationMatrix);
+      gl.drawArrays(gl.POINTS, 0, layer.count);
+    }
+
+    animationFrame = requestAnimationFrame(render);
+  };
+  const handleContextLost = (event: Event) => {
+    event.preventDefault();
+    disposed = true;
+    cancelAnimationFrame(animationFrame);
+  };
+
+  observer.observe(canvas);
+  resize();
+  animationFrame = requestAnimationFrame(render);
+  canvas.addEventListener("webglcontextlost", handleContextLost);
+
+  return () => {
+    disposed = true;
+    cancelAnimationFrame(animationFrame);
+    observer.disconnect();
+    canvas.removeEventListener("webglcontextlost", handleContextLost);
+
+    for (const layer of layers) {
+      gl.deleteBuffer(layer.buffer);
+    }
+
+    gl.deleteProgram(program);
+  };
+};
+
+const createParticleLayers = (
+  gl: WebGLRenderingContext,
+  isLight: boolean,
+): ParticleLayer[] => {
+  const layers: ParticleLayer[] = [];
+
+  for (const shell of SHELLS) {
+    const buffer = gl.createBuffer();
+
+    if (!buffer) {
+      continue;
+    }
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, createShellVertices(shell), gl.STATIC_DRAW);
+    layers.push({
+      alpha: isLight ? shell.alphaLight : shell.alphaDark,
+      buffer,
+      count: shell.count,
+      phase: shell.seed * 2.4,
+      speed: shell.speed,
+    });
+  }
+
+  return layers;
+};
+
+const createProgram = (
+  gl: WebGLRenderingContext,
+  vertexSource: string,
+  fragmentSource: string,
+) => {
+  const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexSource);
+  const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentSource);
+
+  if (!vertexShader || !fragmentShader) {
+    if (vertexShader) {
+      gl.deleteShader(vertexShader);
+    }
+
+    if (fragmentShader) {
+      gl.deleteShader(fragmentShader);
+    }
+
+    return null;
+  }
+
+  const program = gl.createProgram();
+
+  if (!program) {
+    gl.deleteShader(vertexShader);
+    gl.deleteShader(fragmentShader);
+    return null;
+  }
+
+  gl.attachShader(program, vertexShader);
+  gl.attachShader(program, fragmentShader);
+  gl.linkProgram(program);
+  gl.deleteShader(vertexShader);
+  gl.deleteShader(fragmentShader);
+
+  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+    gl.deleteProgram(program);
+    return null;
+  }
+
+  return program;
+};
+
+const createShader = (
+  gl: WebGLRenderingContext,
+  type: number,
+  source: string,
+) => {
+  const shader = gl.createShader(type);
+
+  if (!shader) {
+    return null;
+  }
+
+  gl.shaderSource(shader, source);
+  gl.compileShader(shader);
+
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    gl.deleteShader(shader);
+    return null;
+  }
+
+  return shader;
+};
+
+const createShellVertices = (shell: (typeof SHELLS)[number]) => {
+  const vertices = new Float32Array(shell.count * 5);
+  const random = mulberry32(0x4d494749 + shell.seed * 0x9e3779b1);
+  const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+  let vertexOffset = 0;
+
+  for (let i = 0; i < shell.count; i++) {
+    const y = 1 - (i / (shell.count - 1)) * 2;
+    const radiusAtY = Math.sqrt(Math.max(0, 1 - y * y));
+    const theta = i * goldenAngle + (random() - 0.5) * 0.08;
+    const wave = Math.sin(i * 0.017 + shell.seed * 2.4) * 0.5 + 0.5;
+    const shellRadius =
+      shell.radius + (random() - 0.5) * shell.jitter + wave * 0.08;
+    const sizeJitter = 0.84 + random() * 0.36;
+
+    vertices[vertexOffset] = Math.cos(theta) * radiusAtY * shellRadius;
+    vertices[vertexOffset + 1] =
+      (y + (random() - 0.5) * 0.02) * shellRadius;
+    vertices[vertexOffset + 2] = Math.sin(theta) * radiusAtY * shellRadius;
+    vertices[vertexOffset + 3] = random();
+    vertices[vertexOffset + 4] = shell.size * sizeJitter;
+    vertexOffset += 5;
+  }
+
+  return vertices;
+};
+
+const enableAttribute = (
+  gl: WebGLRenderingContext,
+  location: number,
+  size: number,
+  stride: number,
+  offset: number,
+) => {
+  if (location < 0) {
+    return;
+  }
+
+  gl.enableVertexAttribArray(location);
+  gl.vertexAttribPointer(
+    location,
+    size,
+    gl.FLOAT,
+    false,
+    stride,
+    offset * Float32Array.BYTES_PER_ELEMENT,
+  );
+};
+
+const setUniformColor = (
+  gl: WebGLRenderingContext,
+  location: WebGLUniformLocation | null,
+  isLight: boolean,
+) => {
+  if (!location) {
+    return;
+  }
+
+  const value = isLight ? 0.02 : 1;
+  gl.uniform3f(location, value, value, value);
+};
+
+const setRotationMatrix = (
+  target: Float32Array,
+  y: number,
+  x: number,
+  z: number,
+) => {
+  const sy = Math.sin(y);
+  const cy = Math.cos(y);
+  const sx = Math.sin(x);
+  const cx = Math.cos(x);
+  const sz = Math.sin(z);
+  const cz = Math.cos(z);
+
+  target[0] = cy * cz + sy * sx * sz;
+  target[1] = -cy * sz + sy * sx * cz;
+  target[2] = sy * cx;
+  target[3] = cx * sz;
+  target[4] = cx * cz;
+  target[5] = -sx;
+  target[6] = -sy * cz + cy * sx * sz;
+  target[7] = sy * sz + cy * sx * cz;
+  target[8] = cy * cx;
+};
+
+const damp = (current: number, target: number, lambda: number, delta: number) =>
+  current + (target - current) * (1 - Math.exp(-lambda * delta));
+
+const mulberry32 = (seed: number) => {
+  let state = seed;
+
+  return () => {
+    state += 0x6d2b79f5;
+    let next = state;
+    next = Math.imul(next ^ (next >>> 15), next | 1);
+    next ^= next + Math.imul(next ^ (next >>> 7), next | 61);
+    return ((next ^ (next >>> 14)) >>> 0) / 4294967296;
+  };
 };
