@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "vite build && node scripts/create-pages-404.mjs",
+    "build": "NITRO_PRESET=node-server vite build && node scripts/create-pages-404.mjs",
     "preview": "vite preview",
     "start": "vite preview",
     "pages:deploy": "pnpm build && pnpm dlx wrangler pages deploy .output/public --project-name michaelignat-web",

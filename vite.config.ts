@@ -27,6 +27,8 @@ export default defineConfig({
       ],
     }),
     react(),
-    nitro(),
+    nitro({
+      preset: "node-server",
+    }),
   ],
 });
