@@ -28,7 +28,7 @@ function About() {
 
           <div className="mt-6 space-y-7 text-base text-muted-foreground">
             <p>
-              A software engineer from Perth, Australia with a simple goal:
+              An engineer from Perth, Australia with a simple goal:
               <span className="inline-block font-semibold text-foreground/90">
                 To design solutions that are unique and stand out.
               </span>
@@ -36,25 +36,23 @@ function About() {
 
             <p>
               I treat engineering as an art form. To be able to create something
-              that simply once existed as an idea is a truly rewarding
+              that simply once existed as an idea is a uniquely rewarding
               experience. I love the feeling of seeing something I've created
               come to life.
             </p>
 
             <p>
-              The true skill of a software engineer lies in their ability to
-              pick up new technologies. There's always a new framework, a new
-              language, a new tool - being able to adapt and learn quickly is
-              something that I take pride in and also feel as though is
-              overlooked by many in the industry.
+              The true skill of an engineer lies in their ability to pick up new
+              technologies. There's always a new framework, a new language, a
+              new tool. Being able to adapt and learn quickly is something that
+              I take pride in and feel as though is often overlooked by many in
+              the industry.
             </p>
 
             <p>
-              I aim to surround myself with like-minded people who achieve their
-              best each and every single day, both physically and mentally. An
-              extremely rare trait to find in people is passion. It's something
-              that I hold in high regard and something that I look for in
-              everyone I work with.
+              I aim to surround myself with like-minded people, who are
+              passionate about what they do and aren't looking for the easy way
+              out.
             </p>
           </div>
         </div>

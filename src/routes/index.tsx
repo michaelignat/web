@@ -1,6 +1,6 @@
-import { MovingParticleSphere } from "@/components/particle-background";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Warp } from "@paper-design/shaders-react";
 import { ArrowRightIcon, Link2Icon } from "@radix-ui/react-icons";
 import { Link, createFileRoute } from "@tanstack/react-router";
 
@@ -11,10 +11,22 @@ export const Route = createFileRoute("/")({
 function Home() {
   return (
     <div className="container relative flex h-full items-center justify-center">
-      <MovingParticleSphere />
+      <Warp
+        className="pointer-events-none fixed inset-0 h-full w-full opacity-50"
+        colors={["#000000", "#d2a76a", "#000000"]}
+        proportion={0.3}
+        softness={1}
+        distortion={0.21}
+        swirl={0.57}
+        swirlIterations={10}
+        shape="edge"
+        shapeScale={0.75}
+        speed={1.6}
+        scale={1.2}
+      />
 
-      <div className="flex h-[calc(100vh-10rem)] flex-col items-center justify-center space-y-4">
-        <h1 className="z-10 text-center text-2xl font-bold tracking-tight sm:text-4xl sm:text-[2.25rem]">
+      <div className="flex h-[calc(100vh-10rem)] flex-col items-center justify-center space-y-6">
+        <h1 className="z-10 text-center font-bold text-2xl tracking-tight sm:text-4xl sm:text-[2.25rem]">
           No artist tolerates reality.
         </h1>
 
