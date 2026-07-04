@@ -1,6 +1,5 @@
 import { cn } from "@/lib/utils";
 import { GitHubLogoIcon, LinkedInLogoIcon } from "@radix-ui/react-icons";
-import Link from "next/link";
 import { ThemeToggle } from "../theme/theme-toggle";
 import { buttonVariants } from "../ui/button";
 import { DesktopNav } from "./desktop-nav";
@@ -13,7 +12,7 @@ export const Navbar = () => (
       <MobileNav />
 
       <nav className="flex flex-1 justify-end items-center space-x-1">
-        <Link
+        <a
           href="https://github.com/michaelignat"
           target="_blank"
           rel="noreferrer"
@@ -29,9 +28,9 @@ export const Navbar = () => (
             <GitHubLogoIcon className="size-4" />
             <span className="sr-only">GitHub</span>
           </div>
-        </Link>
+        </a>
 
-        <Link
+        <a
           href="https://www.linkedin.com/in/michaelignat/"
           target="_blank"
           rel="noreferrer"
@@ -47,7 +46,7 @@ export const Navbar = () => (
             <LinkedInLogoIcon className="size-4" />
             <span className="sr-only">Twitter</span>
           </div>
-        </Link>
+        </a>
 
         <ThemeToggle />
       </nav>
@@ -58,14 +57,10 @@ export const Navbar = () => (
 export const navItems = [
   {
     name: "About",
-    href: "/about",
+    to: "/about",
   },
   {
     name: "Projects",
-    href: "/projects",
+    to: "/projects",
   },
-  {
-    name: "Gear",
-    href: "/gear",
-  },
-];
+] as const;

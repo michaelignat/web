@@ -1,11 +1,12 @@
 "use client";
 
-import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { useRouterState } from "@tanstack/react-router";
 import { PageContainer } from "./page-container";
 
 export const Footer = () => {
-  const pathname = usePathname();
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  });
 
   if (pathname === "/") {
     return null;
@@ -18,7 +19,7 @@ export const Footer = () => {
           michaelignat.
         </span>
 
-        <Image
+        <img
           src="/images/cross.png"
           alt="Orthodox Cross"
           width={15}

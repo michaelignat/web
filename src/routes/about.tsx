@@ -1,16 +1,22 @@
 import { PageContainer } from "@/components/page-container";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import type { Metadata } from "next";
-import Image from "next/image";
-import Link from "next/link";
+import { createFileRoute } from "@tanstack/react-router";
 
-export const metadata: Metadata = {
-  title: "About",
-  description: "I’m Michael Ignat. A software engineer from Perth, Australia.",
-};
+export const Route = createFileRoute("/about")({
+  head: () => ({
+    meta: [
+      { title: "About - Michael Ignat" },
+      {
+        name: "description",
+        content: "I'm Michael Ignat. A software engineer from Perth, Australia.",
+      },
+    ],
+  }),
+  component: About,
+});
 
-export default () => {
+function About() {
   return (
     <PageContainer>
       <div className="grid grid-cols-1 gap-y-8 lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-y-6">
@@ -52,31 +58,30 @@ export default () => {
 
             <p>
               I'm always looking for interesting projects to work on, don't
-              hesitate to reach out ✌️
+              hesitate to reach out.
             </p>
           </div>
         </div>
 
         <div className="lg:pl-20">
-          <div className="max-w-xs lg:max-w-none lg:mt-20">
-            <Image
+          <div className="max-w-xs lg:mt-20 lg:max-w-none">
+            <img
               src="/images/me.jpeg"
               alt="Michael Ignat"
-              sizes="29rem"
               width={300}
               height={300}
               className="rounded-2xl"
             />
           </div>
 
-          <Link
+          <a
             href="mailto:michael@michaelignat.com.au"
             className={cn(buttonVariants({ variant: "link" }), "mt-4 pl-0")}
           >
-            Send me an email ✉️
-          </Link>
+            Send me an email
+          </a>
         </div>
       </div>
     </PageContainer>
   );
-};
+}

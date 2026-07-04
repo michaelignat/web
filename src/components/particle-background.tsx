@@ -3,7 +3,6 @@
 import { animated, useSpring } from "@react-spring/three";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Bloom, EffectComposer, Noise } from "@react-three/postprocessing";
-import { useTheme } from "next-themes";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { createNoise3D } from "simplex-noise";
 import {
@@ -13,6 +12,7 @@ import {
   type ShaderMaterial,
   Vector3,
 } from "three";
+import { useTheme } from "./theme/theme-provider";
 
 export const MovingParticleSphere = () => (
   <div className="fixed inset-0 w-full h-full">
@@ -25,8 +25,8 @@ export const MovingParticleSphere = () => (
 const SceneContent = () => {
   const { scene } = useThree();
 
-  const { theme } = useTheme();
-  const isLight = theme === "light";
+  const { resolvedTheme } = useTheme();
+  const isLight = resolvedTheme === "light";
 
   const sphereColor = isLight ? "#000000" : "#FFFFFF";
 

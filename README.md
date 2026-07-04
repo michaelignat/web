@@ -1,6 +1,6 @@
 # portfolio
 
-Static Next.js portfolio deployed on Cloudflare Pages.
+Static TanStack Start portfolio deployed on Cloudflare Pages.
 
 ## Local development
 
@@ -11,14 +11,16 @@ pnpm dev
 
 ## Cloudflare Pages
 
-This app uses Next.js static export, so `pnpm build` writes the deployable site to `out/`.
+This app uses TanStack Start prerendering, so `pnpm build` writes the deployable static site to `.output/public`.
 
 For Cloudflare Pages Git integration:
 
-- Framework preset: `Next.js (Static HTML Export)`
+- Framework preset: `None`
 - Build command: `pnpm build`
-- Build output directory: `out`
+- Build output directory: `.output/public`
 - Production branch: `main`
+
+Do not use the Next.js, OpenNext, or Workers preset for this site. It is deployed as prerendered static assets on Pages.
 
 For Wrangler direct upload:
 

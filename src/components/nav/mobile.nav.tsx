@@ -4,8 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import Link, { type LinkProps } from "next/link";
-import { useRouter } from "next/navigation";
+import { Link } from "@tanstack/react-router";
 import { type PropsWithChildren, useState } from "react";
 import { navItems } from "./navbar";
 
@@ -27,7 +26,7 @@ export const MobileNav = () => {
 
       <SheetContent side="left" className="pr-0">
         <MobileLink
-          href="/"
+          to="/"
           className="flex items-center gap-2"
           onOpenChange={setOpen}
         >
@@ -38,8 +37,8 @@ export const MobileNav = () => {
           <div className="flex flex-col space-y-3">
             {navItems.map((item) => (
               <MobileLink
-                key={item.href}
-                href={item.href}
+                key={item.to}
+                to={item.to}
                 onOpenChange={setOpen}
               >
                 {item.name}
@@ -52,25 +51,23 @@ export const MobileNav = () => {
   );
 };
 
-interface MobileLinkProps extends LinkProps, PropsWithChildren {
+interface MobileLinkProps extends PropsWithChildren {
+  to: "/" | "/about" | "/projects";
   className?: string;
   onOpenChange?: (open: boolean) => void;
 }
 
 const MobileLink = ({
-  href,
+  to,
   onOpenChange,
   className,
   children,
   ...props
 }: MobileLinkProps) => {
-  const router = useRouter();
-
   return (
     <Link
-      href={href}
+      to={to}
       onClick={() => {
-        router.push(href.toString());
         onOpenChange?.(false);
       }}
       className={cn(className)}
