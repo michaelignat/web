@@ -1,3 +1,4 @@
+import { useTheme } from "@/components/theme/theme-provider";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Warp } from "@paper-design/shaders-react";
@@ -9,11 +10,17 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
+  const { resolvedTheme } = useTheme();
+
   return (
     <div className="container relative flex h-full items-center justify-center">
       <Warp
-        className="pointer-events-none fixed inset-0 h-full w-full opacity-50"
-        colors={["#000000", "#d2a76a", "#000000"]}
+        className="pointer-events-none fixed inset-0 h-full w-full opacity-25"
+        colors={
+          resolvedTheme === "dark"
+            ? ["#000000", "#ffffff", "#000000"]
+            : ["#ffffff", "#000000", "#ffffff"]
+        }
         proportion={0.3}
         softness={1}
         distortion={0.21}
@@ -22,7 +29,7 @@ function Home() {
         shape="edge"
         shapeScale={0.75}
         speed={1.6}
-        scale={1.2}
+        scale={1.5}
       />
 
       <div className="flex h-[calc(100vh-10rem)] flex-col items-center justify-center space-y-6">
