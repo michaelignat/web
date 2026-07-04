@@ -11,20 +11,20 @@ import { createFileRoute } from "@tanstack/react-router";
 
 const projects = [
   {
-    name: "Catena",
-    technologies: "React Native (Expo), AI SDK, Braintrust, CF Workers",
-    description:
-      "Cycling coach that gives riders personalised training guidance to help them improve.",
-    href: "https://catena.bike/",
-    image: { href: "/images/catena.svg", width: 20, height: 20 },
-  },
-  {
     name: "Struo",
     technologies: "Tanstack Start, Tailwind, Figma",
     description:
       "My web consulting agency that helps companies grow through innovative solutions.",
     href: "https://struo.dev/",
     image: { href: "/images/struo.svg", width: 15, height: 15 },
+  },
+  {
+    name: "Catena",
+    technologies: "React Native (Expo), AI SDK, Braintrust, CF Workers",
+    description:
+      "Cycling coach that gives riders personalised training guidance to help them improve.",
+    href: "https://catena.bike/",
+    image: { href: "/images/catena.svg", width: 20, height: 20 },
   },
   {
     name: "No_Ops",
