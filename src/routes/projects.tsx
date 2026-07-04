@@ -12,8 +12,7 @@ import { createFileRoute } from "@tanstack/react-router";
 const projects = [
   {
     name: "Catena",
-    technologies:
-      "React Native (Expo), AI SDK, Braintrust, CF Workers, PostgreSQL",
+    technologies: "React Native (Expo), AI SDK, Braintrust, CF Workers",
     description:
       "Cycling coach that gives riders personalised training guidance to help them improve.",
     href: "https://catena.bike/",
