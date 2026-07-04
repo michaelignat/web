@@ -9,7 +9,8 @@ export const Route = createFileRoute("/about")({
       { title: "About - Michael Ignat" },
       {
         name: "description",
-        content: "I'm Michael Ignat. A software engineer from Perth, Australia.",
+        content:
+          "I'm Michael Ignat. A software engineer from Perth, Australia.",
       },
     ],
   }),
@@ -21,7 +22,7 @@ function About() {
     <PageContainer>
       <div className="grid grid-cols-1 gap-y-8 lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-y-6">
         <div className="row-span-2">
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
+          <h1 className="font-bold text-4xl tracking-tight sm:text-5xl">
             Michael.
           </h1>
 
@@ -54,11 +55,6 @@ function About() {
               extremely rare trait to find in people is passion. It's something
               that I hold in high regard and something that I look for in
               everyone I work with.
-            </p>
-
-            <p>
-              I'm always looking for interesting projects to work on, don't
-              hesitate to reach out.
             </p>
           </div>
         </div>
