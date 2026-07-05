@@ -3,6 +3,8 @@ import react from "@vitejs/plugin-react";
 import { nitro } from "nitro/vite";
 import { defineConfig } from "vite";
 
+import { cloudflare } from "@cloudflare/vite-plugin";
+
 export default defineConfig({
   server: {
     port: 3000,
@@ -27,8 +29,10 @@ export default defineConfig({
       ],
     }),
     react(),
-    nitro({
-      preset: "node-server",
+    cloudflare({
+      viteEnvironment: {
+        name: "ssr"
+      }
     }),
   ],
 });
