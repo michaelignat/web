@@ -39,7 +39,7 @@ function Home() {
 
         <div className="flex space-x-6">
           <a
-            href="/MICHAEL_IGNAT_RESUME_2025.pdf"
+            href="/MICHAEL_IGNAT_RESUME_2026.pdf"
             target="_blank"
             rel="noreferrer"
             className={cn(
