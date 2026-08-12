@@ -1,66 +1,101 @@
-import { useTheme } from "@/components/theme/theme-provider";
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { Warp } from "@paper-design/shaders-react";
-import { ArrowRightIcon, Link2Icon } from "@radix-ui/react-icons";
-import { Link, createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+
+const projects = [
+  {
+    name: "Struo",
+    description:
+      "Software agency which helps companies grow through innovative solutions.",
+    href: "https://struo.dev/",
+  },
+  {
+    name: "Catena",
+    description:
+      "Cycling coach providing personalised training guidance through AI.",
+    href: "https://catena.bike/",
+  },
+  {
+    name: "No_Ops",
+    description:
+      "DevOps platform simplifying AWS infrastructure to deploy applications faster.",
+    href: "https://www.getnoops.com/",
+  },
+  {
+    name: "Inflow",
+    description:
+      "Payment service enabling seamless transactions with multiple vendors.",
+    href: "https://www.myinflow.com/",
+  },
+] as const;
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Michael Ignat" },
+      {
+        name: "description",
+        content:
+          "Michael Ignat is a software engineer based in Perth, Australia.",
+      },
+    ],
+  }),
   component: Home,
 });
 
 function Home() {
-  const { resolvedTheme } = useTheme();
-
   return (
-    <div className="container relative flex h-full items-center justify-center">
-      <Warp
-        className="pointer-events-none fixed inset-0 h-full w-full opacity-25"
-        colors={
-          resolvedTheme === "dark"
-            ? ["#000000", "#ffffff", "#000000"]
-            : ["#ffffff", "#000000", "#ffffff"]
-        }
-        proportion={0.3}
-        softness={1}
-        distortion={0.21}
-        swirl={0.57}
-        swirlIterations={10}
-        shape="edge"
-        shapeScale={0.75}
-        speed={1.6}
-        scale={1.5}
-      />
+    <main className="mx-auto w-full max-w-[620px] px-6 pt-16 pb-24 sm:px-0">
+      <section className="flex flex-col gap-[82px] pb-[82px]">
+        <div className="flex flex-col gap-3">
+          <h1 className="section-title">Now</h1>
+          <p className="body-copy">
+            I&apos;m working at{" "}
+            <a
+              href="https://ailo.io/"
+              target="_blank"
+              rel="noreferrer"
+              className="underline underline-offset-4"
+            >
+              Ailo
+            </a>{" "}
+            in the fintech team. I&apos;ve worked on a range of different
+            products during my career with a particular interest in design
+            engineering.
+          </p>
+        </div>
 
-      <div className="flex h-[calc(100vh-10rem)] flex-col items-center justify-center space-y-6">
-        <h1 className="z-10 text-center font-bold text-2xl tracking-tight sm:text-4xl sm:text-[2.25rem]">
-          No artist tolerates reality.
-        </h1>
-
-        <div className="flex space-x-6">
+        <div className="flex flex-col gap-3">
+          <h2 className="section-title">Resume</h2>
           <a
             href="/MICHAEL_IGNAT_RESUME_2026.pdf"
             target="_blank"
             rel="noreferrer"
-            className={cn(
-              buttonVariants({ variant: "outline", size: "sm" }),
-              "z-10 sm:h-9 sm:px-4 sm:py-2",
-            )}
+            className="body-copy underline underline-offset-4"
           >
-            View Resume <Link2Icon className="ml-2" />
+            You can view my full experience here ↗
           </a>
-
-          <Link
-            to="/projects"
-            className={cn(
-              buttonVariants({ variant: "outline", size: "sm" }),
-              "z-10 sm:h-9 sm:px-4 sm:py-2",
-            )}
-          >
-            See projects <ArrowRightIcon className="ml-2" />
-          </Link>
         </div>
-      </div>
-    </div>
+      </section>
+
+      <section aria-labelledby="projects-heading">
+        <h2 id="projects-heading" className="section-title">
+          Projects
+        </h2>
+
+        <div className="mt-3 flex flex-col">
+          {projects.map((project) => (
+            <a
+              key={project.name}
+              href={project.href}
+              target="_blank"
+              rel="noreferrer"
+              className="project-card relative isolate flex w-full flex-col gap-3 py-3 no-underline"
+            >
+              <span className="project-title">{project.name}</span>
+              <span className="body-copy">{project.description}</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    </main>
   );
 }

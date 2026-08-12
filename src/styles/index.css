@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "Geist";
+  src: url("/fonts/Geist-Medium.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -80,9 +88,51 @@
 
 @layer base {
   * {
-    @apply border-border;
+    box-sizing: border-box;
   }
+
   body {
     @apply bg-background text-foreground;
+    min-width: 320px;
+  }
+}
+
+@layer components {
+  .section-title {
+    @apply text-[16px] font-medium leading-5 tracking-[-0.01em] text-foreground dark:text-white;
+    font-family: "Geist", ui-sans-serif, system-ui, sans-serif;
+  }
+
+  .body-copy {
+    @apply text-[16px] font-normal leading-[27px] tracking-[-0.01em] text-[#606060] dark:text-[#b8b8b8];
+  }
+
+  .project-title {
+    @apply text-[16px] font-normal leading-5 tracking-[-0.01em] text-foreground dark:text-white;
+  }
+
+  .project-card {
+    isolation: isolate;
+  }
+
+  .project-card::before {
+    position: absolute;
+    inset: 0 0 0 -8px;
+    z-index: -1;
+    border-radius: 0.375rem;
+    content: "";
+    transition: background-color 160ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .project-card:hover::before {
+      background-color: hsl(var(--muted));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project-card::before {
+      transition: none;
+    }
   }
 }

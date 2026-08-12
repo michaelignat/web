@@ -1,32 +1,13 @@
-"use client";
-
-import { useRouterState } from "@tanstack/react-router";
-import { PageContainer } from "./page-container";
-
-export const Footer = () => {
-  const pathname = useRouterState({
-    select: (state) => state.location.pathname,
-  });
-
-  if (pathname === "/") {
-    return null;
-  }
-
-  return (
-    <footer>
-      <PageContainer className="flex justify-between">
-        <span className="text-sm leading-loose text-muted-foreground text-balance">
-          michaelignat.
-        </span>
-
-        <img
-          src="/images/cross.png"
-          alt="Orthodox Cross"
-          width={15}
-          height={20}
-          className="dark:invert"
-        />
-      </PageContainer>
-    </footer>
-  );
-};
+export const Footer = () => (
+  <footer className="mt-auto w-full">
+    <div className="mx-auto flex w-full max-w-[620px] justify-end px-6 pb-8 sm:px-0">
+      <img
+        src="/images/cross.png"
+        alt="Orthodox cross"
+        width={15}
+        height={20}
+        className="dark:invert"
+      />
+    </div>
+  </footer>
+);

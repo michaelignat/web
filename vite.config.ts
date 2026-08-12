@@ -21,8 +21,6 @@ export default defineConfig({
       },
       pages: [
         { path: "/", prerender: { enabled: true } },
-        { path: "/about", prerender: { enabled: true } },
-        { path: "/projects", prerender: { enabled: true } },
         { path: "/404", prerender: { enabled: true } },
       ],
     }),

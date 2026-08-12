@@ -1,11 +1,10 @@
-import typographyPlugin from "@tailwindcss/typography";
 import type { Config } from "tailwindcss";
 import { fontFamily } from "tailwindcss/defaultTheme";
 
 export default {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   darkMode: "class",
-  plugins: [typographyPlugin, require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate")],
   theme: {
     container: {
       center: true,
