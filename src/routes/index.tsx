@@ -66,7 +66,7 @@ function Home() {
         <div className="flex flex-col gap-3">
           <h2 className="section-title">Resume</h2>
           <a
-            href="/MICHAEL_IGNAT_RESUME_2026.pdf"
+            href="/IGNAT_MICHAEL_CV_2026.pdf"
             target="_blank"
             rel="noreferrer"
             className="body-copy underline underline-offset-4"
